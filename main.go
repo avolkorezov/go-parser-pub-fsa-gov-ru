@@ -82,11 +82,15 @@ func getDeclarationIds(declarations map[string]interface{}) []int {
 }
 
 func getDeclarations(page, size int) map[string]interface{} {
-	response, _, _ := makeRequest().
+	response, _, errs := makeRequest().
 		Post(sourceUrl+"/api/v1/rds/common/declarations/get").
 		AppendHeader("Authorization", bearerToken).
 		Send(fmt.Sprintf(getRequestBody(), size, page)).
 		End()
+
+	if errs != nil {
+		panic(errs)
+	}
 
 	return readCloserToJson(response.Body)
 }
